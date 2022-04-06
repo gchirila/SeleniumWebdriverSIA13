@@ -1,7 +1,7 @@
 ﻿using OpenQA.Selenium;
 using System.Threading;
 
-namespace SeleniumWebdriverSIA13
+namespace SeleniumWebdriverSIA13.PageObjects.LoginPage
 {
     public class LoginPage
     {

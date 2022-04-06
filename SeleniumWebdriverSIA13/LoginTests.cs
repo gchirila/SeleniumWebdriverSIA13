@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using SeleniumWebdriverSIA13.PageObjects.LoginPage;
 using System.Threading;
 
 namespace SeleniumWebdriverSIA13
@@ -26,6 +27,7 @@ namespace SeleniumWebdriverSIA13
             driver.FindElement(By.Id("sign-in")).Click();
             //fill email
             Thread.Sleep(2000);
+            loginPage = new LoginPage(driver);
         }
 
         [TestMethod]
