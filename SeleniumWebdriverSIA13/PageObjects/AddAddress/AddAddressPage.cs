@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Support.UI;
+using SeleniumWebdriverSIA13.PageObjects.AddAddress.InputData;
+using SeleniumWebdriverSIA13.PageObjects.AddressDetails;
 
 namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
 {
@@ -25,18 +28,37 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
 
         private IWebElement TxtCity => _driver.FindElement(By.Id("address_city"));
 
+        private IWebElement DdlStates => _driver.FindElement(By.Id("address_state"));
+
         private IWebElement TxtZipCode => _driver.FindElement(By.Id("address_zip_code"));
+
+        private IList<IWebElement> LstCountries => _driver.FindElements(By.CssSelector("label[for^=address_country]"));
+
+        private IWebElement TxtColor => _driver.FindElement(By.Id("address_color"));
 
         private IWebElement BtnCreateAddress => _driver.FindElement(By.XPath("//input[@value='Create Address']"));
 
-        public void AddAddress(string firstName, string lastName, string address1, string city, string zipcode)
+        public AddressDetailsPage AddAddress(AddAddressPageBO inputData)
+
         {
-            TxtFirstName.SendKeys(firstName);
-            TxtLastName.SendKeys(lastName);
-            TxtAddress1.SendKeys(address1);
-            TxtCity.SendKeys(city);
-            TxtZipCode.SendKeys(zipcode);
+            TxtFirstName.SendKeys(inputData.FirstName);
+            TxtLastName.SendKeys(inputData.LastName);
+            TxtAddress1.SendKeys(inputData.Address1);
+            TxtCity.SendKeys(inputData.City);
+
+            var state = new SelectElement(DdlStates);
+            state.SelectByText(inputData.State);
+
+            TxtZipCode.SendKeys(inputData.ZipCode);
+
+            LstCountries[0].Click();
+
+            LstCountries.FirstOrDefault(element => element.Text.Contains(inputData.Country)).Click();
+
+            var jsExecutor = (IJavaScriptExecutor)_driver;
+            jsExecutor.ExecuteScript("arguments[0].setAttribute('value', arguments[1])", TxtColor, inputData.Color);
             BtnCreateAddress.Click();
+            return new AddressDetailsPage(_driver);
         }
     }
 }

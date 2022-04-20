@@ -21,12 +21,13 @@ namespace SeleniumWebdriverSIA13.PageObjects.LoginPage
         public IWebElement LblBadEmailOrPassword => driver.FindElement(By.XPath(""));
 
 
-        public void LoginApplication(string email, string password)
+        public HomePage.HomePage LoginApplication(string email, string password)
         {
             TxtEmail.SendKeys(email);
             TxtPassword.SendKeys(password);
             BtnLogin.Click();
             Thread.Sleep(2000);
+            return new HomePage.HomePage(driver);
         }
     }
 }

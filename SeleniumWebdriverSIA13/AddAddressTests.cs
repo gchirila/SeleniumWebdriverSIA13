@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SeleniumWebdriverSIA13.PageObjects.AddAddress.InputData;
 
 namespace SeleniumWebdriverSIA13
 {
@@ -33,10 +34,8 @@ namespace SeleniumWebdriverSIA13
             //fill email
             Thread.Sleep(2000);
             var loginPage = new LoginPage(_driver);
-            loginPage.LoginApplication("test@test.test", "test");
-            var homePage = new HomePage(_driver);
-            homePage.NavigateToAddressesPage();
-            var addressesPage = new AddressesPage(_driver);
+            var homePage = loginPage.LoginApplication("test@test.test", "test");
+            var addressesPage = homePage.NavigateToAddressesPage();
             Thread.Sleep(2000);
             addAddressPage = addressesPage.NavigateToAddAddressPage();
             Thread.Sleep(2000);
@@ -45,7 +44,19 @@ namespace SeleniumWebdriverSIA13
         [TestMethod]
         public void ShouldAddAddressSuccessfully()
         {
-            addAddressPage.AddAddress("SIA13 FN", "SIA13 LN", "SIA13 address1", "SIA13 city", "SIA13 zipcode");
+            var inputData = new AddAddressPageBO()
+            {
+                //FirstName = "SIA13 FN",
+                LastName = "SIA13 LN",
+                Address1 = "SIA13 address1",
+                City = "SIA13 city",
+                State = "California",
+                ZipCode = "SIA13 zipcode",
+                Country = "Canada",
+                Color = "#FF0000"
+            };
+            var addressDetailsPage = addAddressPage.AddAddress(inputData);
+            Assert.AreEqual("Address was successfully created.", addressDetailsPage.NoticeText);
         }
 
         [TestCleanup]

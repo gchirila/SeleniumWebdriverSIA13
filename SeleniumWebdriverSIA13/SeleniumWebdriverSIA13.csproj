@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="AddAddressTests.cs" />
     <Compile Include="PageObjects\AddAddress\AddAddressPage.cs" />
+    <Compile Include="PageObjects\AddAddress\InputData\AddAddressPageBO.cs" />
+    <Compile Include="PageObjects\AddressDetails\AddressDetailsPage.cs" />
     <Compile Include="PageObjects\AddressesPage\AddressesPage.cs" />
     <Compile Include="PageObjects\HomePage\HomePage.cs" />
     <Compile Include="PageObjects\LoginPage\LoginPage.cs" />

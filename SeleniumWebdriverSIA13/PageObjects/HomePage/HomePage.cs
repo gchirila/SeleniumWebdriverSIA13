@@ -16,9 +16,10 @@ namespace SeleniumWebdriverSIA13.PageObjects.HomePage
         private IWebElement BtnAddresses => _driver.FindElement(By.CssSelector("a[data-test=addresses]"));
     
     
-        public void NavigateToAddressesPage()
+        public AddressesPage.AddressesPage NavigateToAddressesPage()
         {
             BtnAddresses.Click();
+            return new AddressesPage.AddressesPage(_driver);
         }
     }
 }
