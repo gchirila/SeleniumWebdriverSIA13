@@ -36,7 +36,7 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
 
         private IWebElement TxtColor => _driver.FindElement(By.Id("address_color"));
 
-        private IWebElement BtnCreateAddress => _driver.FindElement(By.XPath("//input[@value='Create Address']"));
+        private IWebElement BtnSubmit => _driver.FindElement(By.XPath("//input[@data-test='submit']"));
 
         public AddressDetailsPage AddAddress(AddAddressPageBO inputData)
 
@@ -57,7 +57,7 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
 
             var jsExecutor = (IJavaScriptExecutor)_driver;
             jsExecutor.ExecuteScript("arguments[0].setAttribute('value', arguments[1])", TxtColor, inputData.Color);
-            BtnCreateAddress.Click();
+            BtnSubmit.Click();
             return new AddressDetailsPage(_driver);
         }
     }

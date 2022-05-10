@@ -20,6 +20,7 @@ namespace SeleniumWebdriverSIA13
     {
         private IWebDriver _driver;
         private AddAddressPage addAddressPage;
+        private AddressesPage addressesPage;
 
         [TestInitialize]
         public void TestInitialize()
@@ -35,9 +36,7 @@ namespace SeleniumWebdriverSIA13
             Thread.Sleep(2000);
             var loginPage = new LoginPage(_driver);
             var homePage = loginPage.LoginApplication("test@test.test", "test");
-            var addressesPage = homePage.NavigateToAddressesPage();
-            Thread.Sleep(2000);
-            addAddressPage = addressesPage.NavigateToAddAddressPage();
+            addressesPage = homePage.NavigateToAddressesPage();
             Thread.Sleep(2000);
         }
 
@@ -55,8 +54,40 @@ namespace SeleniumWebdriverSIA13
                 Country = "Canada",
                 Color = "#FF0000"
             };
+            addAddressPage = addressesPage.NavigateToAddAddressPage();
+            Thread.Sleep(2000);
             var addressDetailsPage = addAddressPage.AddAddress(inputData);
             Assert.AreEqual("Address was successfully created.", addressDetailsPage.NoticeText);
+        }
+
+        [TestMethod]
+        public void ShouldEditAddressSuccessfully()
+        {
+            var inputData = new AddAddressPageBO()
+            {
+                FirstName = "Pretty please don't edit/delete",
+                LastName = "SIA13 edit",
+                Address1 = "SIA13 edit",
+                City = "SIA13 edit",
+                State = "California",
+                ZipCode = "SIA13 zipcode edit",
+                Country = "Canada",
+                Color = "#FF0000"
+            };
+            addAddressPage = addressesPage.NavigateToEditAddressPage(inputData.FirstName);
+
+            var addressDetailsPage = addAddressPage.AddAddress(inputData);
+            Assert.AreEqual("Address was successfully updated.", addressDetailsPage.NoticeText);
+        }
+
+        [TestMethod]
+        public void ShouldDismissAlert()
+        {
+            var inputData = new AddAddressPageBO()
+            {
+                FirstName = "Pretty please don't edit/delete"
+            };
+            addressesPage.DeleteAddress(inputData.FirstName);
         }
 
         [TestCleanup]

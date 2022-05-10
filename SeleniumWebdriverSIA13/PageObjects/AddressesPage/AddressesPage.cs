@@ -17,12 +17,36 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddressesPage
             _driver = driver;
         }
 
-        private IWebElement BtnNewAddress => _driver.FindElement(By.CssSelector("a[data-test=create]"));
+        private IList<IWebElement> LstAddresses =>
+            _driver.FindElements(By.CssSelector("tbody tr"));
+
+        private IWebElement BtnEdit(string addressName) =>
+            LstAddresses.FirstOrDefault(element => element.Text.Contains(addressName))
+                .FindElement(By.CssSelector("a[data-test*=edit]"));
+
+        private IWebElement BtnDelete(string addressName) =>
+            LstAddresses.FirstOrDefault(element => element.Text.Contains(addressName))
+                .FindElement(By.CssSelector("a[data-method=delete]"));
+
+        private IWebElement BtnNewAddress => 
+            _driver.FindElement(By.CssSelector("a[data-test=create]"));
 
         public AddAddressPage NavigateToAddAddressPage()
         {
             BtnNewAddress.Click();
             return new AddAddressPage(_driver);
+        }
+
+        public AddAddressPage NavigateToEditAddressPage(string addressName)
+        {
+            BtnEdit(addressName).Click();
+            return new AddAddressPage(_driver);
+        }
+
+        public void DeleteAddress(string addressName)
+        {
+            BtnDelete(addressName).Click();
+            _driver.SwitchTo().Alert().Dismiss();
         }
     }
 }
