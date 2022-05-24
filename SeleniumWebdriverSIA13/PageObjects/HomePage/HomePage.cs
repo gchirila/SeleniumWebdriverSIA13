@@ -1,6 +1,7 @@
 ﻿
 
 using OpenQA.Selenium;
+using SeleniumWebdriverSIA13.PageObjects.Shared;
 
 namespace SeleniumWebdriverSIA13.PageObjects.HomePage
 {
@@ -13,13 +14,7 @@ namespace SeleniumWebdriverSIA13.PageObjects.HomePage
             _driver = driver;
         }
 
-        private IWebElement BtnAddresses => _driver.FindElement(By.CssSelector("a[data-test=addresses]"));
-    
-    
-        public AddressesPage.AddressesPage NavigateToAddressesPage()
-        {
-            BtnAddresses.Click();
-            return new AddressesPage.AddressesPage(_driver);
-        }
+        public MenuItemControlLoggedIn menuItemControl => 
+            new MenuItemControlLoggedIn(_driver);
     }
 }

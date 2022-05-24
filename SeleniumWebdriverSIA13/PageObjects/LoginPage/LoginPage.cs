@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System.Threading;
+using SeleniumWebdriverSIA13.Helpers;
 
 namespace SeleniumWebdriverSIA13.PageObjects.LoginPage
 {
@@ -12,7 +13,8 @@ namespace SeleniumWebdriverSIA13.PageObjects.LoginPage
             driver = _driver;
         }
 
-        private IWebElement TxtEmail => driver.FindElement(By.Id("session_email"));
+        private By Email = By.Id("session_email");
+        private IWebElement TxtEmail => driver.FindElement(Email);
 
         private IWebElement TxtPassword => driver.FindElement(By.Name("session[password]"));
 
@@ -23,10 +25,10 @@ namespace SeleniumWebdriverSIA13.PageObjects.LoginPage
 
         public HomePage.HomePage LoginApplication(string email, string password)
         {
+            driver.WaitForElement(Email);
             TxtEmail.SendKeys(email);
             TxtPassword.SendKeys(password);
             BtnLogin.Click();
-            Thread.Sleep(2000);
             return new HomePage.HomePage(driver);
         }
     }

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddAddressTests.cs" />
+    <Compile Include="Helpers\WaitHelper.cs" />
     <Compile Include="PageObjects\AddAddress\AddAddressPage.cs" />
     <Compile Include="PageObjects\AddAddress\InputData\AddAddressPageBO.cs" />
     <Compile Include="PageObjects\AddressDetails\AddressDetailsPage.cs" />

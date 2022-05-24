@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using SeleniumWebdriverSIA13.PageObjects.LoginPage;
 using System.Threading;
+using SeleniumWebdriverSIA13.PageObjects.Shared;
 
 namespace SeleniumWebdriverSIA13
 {
@@ -24,9 +25,9 @@ namespace SeleniumWebdriverSIA13
             //open the application url
             driver.Navigate().GoToUrl("http://a.testaddressbook.com/");
             //click sign in button from the menu
-            driver.FindElement(By.Id("sign-in")).Click();
+            var menuItemControl = new MenuItemControlLoggedOut(driver);
+            menuItemControl.NavigateToLoginPage();
             //fill email
-            Thread.Sleep(2000);
             loginPage = new LoginPage(driver);
         }
 
@@ -34,9 +35,10 @@ namespace SeleniumWebdriverSIA13
         public void UserShouldLoginSuccessfully()
         {
             loginPage.LoginApplication("test@test.test","test");
-            var loggedInUserEmail = driver.FindElement(By.XPath("//span[@data-test='current-user']"));
-            Assert.AreEqual("test@test.test", loggedInUserEmail.Text);
-            Assert.IsTrue(loggedInUserEmail.Text.Equals("test@test.test"));
+            var menuItemControl = new MenuItemControlLoggedIn(driver);
+            var loggedInUserEmail = menuItemControl.UserEmail;
+            Assert.AreEqual("test@test.test", loggedInUserEmail);
+            Assert.IsTrue(loggedInUserEmail.Equals("test@test.test"));
         }
 
         [TestMethod]

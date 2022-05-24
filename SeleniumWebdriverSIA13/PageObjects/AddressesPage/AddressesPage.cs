@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SeleniumWebdriverSIA13.Helpers;
 
 namespace SeleniumWebdriverSIA13.PageObjects.AddressesPage
 {
@@ -28,23 +29,27 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddressesPage
             LstAddresses.FirstOrDefault(element => element.Text.Contains(addressName))
                 .FindElement(By.CssSelector("a[data-method=delete]"));
 
+        private By NewAddress = By.CssSelector("a[data-test=create]");
         private IWebElement BtnNewAddress => 
-            _driver.FindElement(By.CssSelector("a[data-test=create]"));
+            _driver.FindElement(NewAddress);
 
         public AddAddressPage NavigateToAddAddressPage()
         {
+            _driver.WaitForElement(NewAddress);
             BtnNewAddress.Click();
             return new AddAddressPage(_driver);
         }
 
         public AddAddressPage NavigateToEditAddressPage(string addressName)
         {
+            _driver.WaitForElement(NewAddress);
             BtnEdit(addressName).Click();
             return new AddAddressPage(_driver);
         }
 
         public void DeleteAddress(string addressName)
         {
+            _driver.WaitForElement(NewAddress);
             BtnDelete(addressName).Click();
             _driver.SwitchTo().Alert().Dismiss();
         }

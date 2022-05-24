@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Support.UI;
+using SeleniumWebdriverSIA13.Helpers;
 using SeleniumWebdriverSIA13.PageObjects.AddAddress.InputData;
 using SeleniumWebdriverSIA13.PageObjects.AddressDetails;
 
@@ -19,8 +21,9 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
             _driver = driver;
         }
 
-
-        private IWebElement TxtFirstName => _driver.FindElement(By.Id("address_first_name"));
+        private By FirstName = By.Id("address_first_name");
+        private IWebElement TxtFirstName => 
+            _driver.FindElement(FirstName);
 
         private IWebElement TxtLastName => _driver.FindElement(By.CssSelector("input[name='address[last_name]']"));
 
@@ -39,10 +42,13 @@ namespace SeleniumWebdriverSIA13.PageObjects.AddAddress
         private IWebElement BtnSubmit => _driver.FindElement(By.XPath("//input[@data-test='submit']"));
 
         public AddressDetailsPage AddAddress(AddAddressPageBO inputData)
-
         {
+            _driver.WaitForElement(FirstName);
+            TxtFirstName.Clear();
             TxtFirstName.SendKeys(inputData.FirstName);
+            TxtLastName.Clear();
             TxtLastName.SendKeys(inputData.LastName);
+            TxtAddress1.SendKeys($"{Keys.Control}A{Keys.Delete}");
             TxtAddress1.SendKeys(inputData.Address1);
             TxtCity.SendKeys(inputData.City);
 

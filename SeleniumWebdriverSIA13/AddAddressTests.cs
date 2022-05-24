@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SeleniumWebdriverSIA13.PageObjects.AddAddress.InputData;
+using SeleniumWebdriverSIA13.PageObjects.Shared;
 
 namespace SeleniumWebdriverSIA13
 {
@@ -30,14 +31,13 @@ namespace SeleniumWebdriverSIA13
             _driver.Manage().Window.Maximize();
             //open the application url
             _driver.Navigate().GoToUrl("http://a.testaddressbook.com/");
-            //click sign in button from the menu
-            _driver.FindElement(By.Id("sign-in")).Click();
+            ////click sign in button from the menu
+            //_driver.FindElement(By.Id("sign-in")).Click();
+            var loggedOutMenuItem = new MenuItemControlLoggedOut(_driver);
+            var loginPage = loggedOutMenuItem.NavigateToLoginPage();
             //fill email
-            Thread.Sleep(2000);
-            var loginPage = new LoginPage(_driver);
             var homePage = loginPage.LoginApplication("test@test.test", "test");
-            addressesPage = homePage.NavigateToAddressesPage();
-            Thread.Sleep(2000);
+            addressesPage = homePage.menuItemControl.NavigateToAddressesPage();
         }
 
         [TestMethod]
@@ -55,7 +55,6 @@ namespace SeleniumWebdriverSIA13
                 Color = "#FF0000"
             };
             addAddressPage = addressesPage.NavigateToAddAddressPage();
-            Thread.Sleep(2000);
             var addressDetailsPage = addAddressPage.AddAddress(inputData);
             Assert.AreEqual("Address was successfully created.", addressDetailsPage.NoticeText);
         }
