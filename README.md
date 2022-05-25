@@ -975,7 +975,7 @@ Getting started:
 - https://www.automatetheplanet.com/getting-started-webdriver/ 
 - official documentation: https://www.selenium.dev/documentation/en/
 	
-Framework overall(Not up to date, aplicable to ):
+Framework overall(Not up to date, but aplicable to a framework):
 - https://testautomationu.applitools.com/test-automation-framework-csharp/chapter12.html
 
 Page object model 
