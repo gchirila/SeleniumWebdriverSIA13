@@ -660,7 +660,7 @@ The first step is to create a class named MenuItemControl. This class will conta
 ```csharp
 
 		public class MenuItemControl
-	    {
+	        {
 	        public IWebDriver driver;
 			
 			public MenuItemControl(IWebDriver browser)
@@ -697,60 +697,67 @@ And we need to move the elements to the according classes. We also need to move 
 
 ```csharp
 
-		public class MenuItemControl
+	    public class MenuItemControlCommon
 	    {
-	        public IWebDriver driver;
-	
-	        public MenuItemControl(IWebDriver browser)
-	        {
-	            driver = browser;
-	        }
-	
-	        private By home = By.CssSelector("");
-	        private IWebElement BtnHome => driver.FindElement(home);
+		public IWebDriver _driver;
+
+		public MenuItemControlCommon(IWebDriver driver)
+		{
+		    _driver = driver;
+		}
+
+		public IWebElement BtnHome => _driver.FindElement(By.CssSelector(""));
 	    }
 		
 ```
 
 ```csharp
 
-		public class LoggedOutMenuItemControl: MenuItemControl
+	    public class MenuItemControlLoggedOut: MenuItemControlCommon
 	    {
-	
-	        private By signIn = By.Id("sign-in");
-	        private IWebElement BtnSignIn => driver.FindElement(signIn);
-	
-	        public LoggedOutMenuItemControl(IWebDriver browser) : base(browser)
-	        {
-	        }
-	
-	        public LoginPage NavigateToLoginPage()
-	        {
-	            BtnSignIn.Click();
-	            return new LoginPage(driver);
-	        }
+		public MenuItemControlLoggedOut(IWebDriver driver) : base(driver)
+		{
+		}
+
+		private By SignIn = By.Id("sign-in");
+		private IWebElement BtnSignIn =>
+		    _driver.FindElement(SignIn);
+
+		public LoginPage.LoginPage NavigateToLoginPage()
+		{
+		    _driver.WaitForElement(SignIn);
+		    BtnSignIn.Click();
+		    return new LoginPage.LoginPage(_driver);
+		}
 	    }
 		
 ```
 
 ```csharp
 
-		public class LoggedInMenuItemControl: MenuItemControl
+	    public class MenuItemControlLoggedIn: MenuItemControlCommon
 	    {
-	        private By addresses = By.CssSelector("");
-	        private IWebElement BtnAddresses => driver.FindElement(addresses);
-	
-	        private By signOut = By.CssSelector("");
-	        private IWebElement BtnSignOut => driver.FindElement(signOut);
-	
-	        private By useremail = By.CssSelector("span[data-test='current-user']");
-	        private IWebElement LblUserEmail=>driver.FindElement(useremail);
-	
-	        public LoggedInMenuItemControl(IWebDriver browser) : base(browser)
-	        {
-	        }
-	
-	        public string UserEmailText => LblUserEmail.Text;
+		public MenuItemControlLoggedIn(IWebDriver driver) : base(driver)
+		{
+		}
+
+		private IWebElement BtnSignOut =>
+		    _driver.FindElement(By.Id("sign-out"));
+
+		private IWebElement BtnAddresses =>
+		    _driver.FindElement(By.CssSelector("a[data-test=addresses]"));
+
+		private IWebElement LblUserEmail =>
+		    _driver.FindElement(By.CssSelector("span[data-test=current-user]"));
+
+
+		public AddressesPage.AddressesPage NavigateToAddressesPage()
+		{
+		    BtnAddresses.Click();
+		    return new AddressesPage.AddressesPage(_driver);
+		}
+
+		public string UserEmail => LblUserEmail.Text;
 	    }
 		
 ```
@@ -947,15 +954,14 @@ Every 30 milliseconds, the method will try to check the condition until the dura
 Example 2:
 
 ```csharp
-        public AddAdressPage(IWebDriver browser)
+        public HomePage.HomePage LoginApplication(string email, string password)
         {
-            driver = browser;
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            wait.Until(ExpectedConditions.ElementIsVisible(firstName));
+            driver.WaitForElement(Email);
+            TxtEmail.SendKeys(email);
+            TxtPassword.SendKeys(password);
+            BtnLogin.Click();
+            return new HomePage.HomePage(driver);
         }
-
-        private By firstName = By.Id("address_first_name");
-        private IWebElement TxtFirstName => driver.FindElement(firstName);
 ```		
 
   
@@ -968,6 +974,9 @@ As said before, this can be put in every class, depending on the context.
 Getting started: 
 - https://www.automatetheplanet.com/getting-started-webdriver/ 
 - official documentation: https://www.selenium.dev/documentation/en/
+	
+Framework overall(Not up to date, aplicable to ):
+- https://testautomationu.applitools.com/test-automation-framework-csharp/chapter12.html
 
 Page object model 
 - https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/ 
@@ -977,10 +986,7 @@ Page object model
 
 Waits: 
 - https://www.toolsqa.com/selenium-webdriver/c-sharp/advance-explicit-webdriver-waits-in-c/ 
-- https://www.lambdatest.com/blog/explicit-fluent-wait-in-selenium-c/ 
-- https://dzone.com/articles/selenium-c-tutorial-using-explicit-and-fluent-wait 
 - https://alexsiminiuc.medium.com/c-expected-conditions-are-deprecated-so-what-b451365adc24 
-- https://testautomationu.applitools.com/test-automation-framework-csharp/chapter12.html
 
 Others: 
 - Select dropdown - https://www.toolsqa.com/selenium-webdriver/c-sharp/dropdown-multiple-select-operations-in-c/ 
