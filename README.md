@@ -592,63 +592,85 @@ We need to iterate the list to identify the address that we have added and to de
 And the methods could be called in test classes:
 ```csharp
 
-		[TestClass]
-	    public class AddressesTest
-	    {
-	        private IWebDriver driver;
-	        private AddressesPage addressesPage;
-	
-	        [TestInitialize]
-	        public void SetUp()
-	        {
-	            driver = new ChromeDriver();
-	            
-	            driver.Manage().Window.Maximize();
-	            driver.Navigate().GoToUrl("http://a.testaddressbook.com/");
-	            var loginPage = new LoginPage(driver);
-	            loginPage.menuItemControl.NavigateToLoginPage();
-	            loginPage.LoginApplication("test@test.test", "test");
-	
-	            var homePage = new HomePage(driver);
-	            //Implicit Wait
-	            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-	
-	            addressesPage = homePage.NavigateToAddressesPage();
-	            var addAddressPage = addressesPage.NavigateToAddAddressPage();
-	            addAddressPage.AddAddress(new AddAddressBO());
-	            var addressDetails =  addAddressPage.NavigateToAddressDetailsPage();
-	            addressesPage = addressDetails.NavigateToAddressesPage();
-	        }
-	
-	        [TestMethod]
-	        public void Should_Delete_Address_V1()
-	        {
-	            addressesPage.DeleteAddress1();
-	            string notice = "Address was successfully destroyed.";
-	            Assert.AreEqual(notice, addressesPage.NoticeText);
-	        }
-	
-	        [TestMethod]
-	        public void Should_Delete_Address_V2()
-	        {
-	            addressesPage.DeleteAddressV2(new AddAddressBO());
-	            string notice = "Address was successfully destroyed.";
-	            Assert.AreEqual(notice, addressesPage.NoticeText);
-	        }
-	
-	        [TestMethod]
-	        public void Should_Delete_Address_V3()
-	        {
-	            addressesPage.DeleteAddressV3();
-	            string notice = "Address was successfully destroyed.";
-	            Assert.AreEqual(notice, addressesPage.NoticeText);
-	        }
-	
-	        [TestCleanup]
-	        public void CleanUp()
-	        {
-	            driver.Quit();
-	        }
+    [TestClass]
+    public class AddAddressTests
+    {
+        private IWebDriver _driver;
+        private AddAddressPage addAddressPage;
+        private AddressesPage addressesPage;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            _driver = new ChromeDriver();
+            //maximize the page
+            _driver.Manage().Window.Maximize();
+            //open the application url
+            _driver.Navigate().GoToUrl("http://a.testaddressbook.com/");
+            ////click sign in button from the menu
+            //_driver.FindElement(By.Id("sign-in")).Click();
+            var loggedOutMenuItem = new MenuItemControlLoggedOut(_driver);
+            var loginPage = loggedOutMenuItem.NavigateToLoginPage();
+            //fill email
+            var homePage = loginPage.LoginApplication("test@test.test", "test");
+            addressesPage = homePage.menuItemControl.NavigateToAddressesPage();
+        }
+
+        [TestMethod]
+        public void ShouldAddAddressSuccessfully()
+        {
+            var inputData = new AddAddressPageBO()
+            {
+                //FirstName = "SIA13 FN",
+                LastName = "SIA13 LN",
+                Address1 = "SIA13 address1",
+                City = "SIA13 city",
+                State = "California",
+                ZipCode = "SIA13 zipcode",
+                Country = "Canada",
+                Color = "#FF0000"
+            };
+            addAddressPage = addressesPage.NavigateToAddAddressPage();
+            var addressDetailsPage = addAddressPage.AddAddress(inputData);
+            Assert.AreEqual("Address was successfully created.", addressDetailsPage.NoticeText);
+        }
+
+        [TestMethod]
+        public void ShouldEditAddressSuccessfully()
+        {
+            var inputData = new AddAddressPageBO()
+            {
+                FirstName = "Pretty please don't edit/delete",
+                LastName = "SIA13 edit",
+                Address1 = "SIA13 edit",
+                City = "SIA13 edit",
+                State = "California",
+                ZipCode = "SIA13 zipcode edit",
+                Country = "Canada",
+                Color = "#FF0000"
+            };
+            addAddressPage = addressesPage.NavigateToEditAddressPage(inputData.FirstName);
+
+            var addressDetailsPage = addAddressPage.AddAddress(inputData);
+            Assert.AreEqual("Address was successfully updated.", addressDetailsPage.NoticeText);
+        }
+
+        [TestMethod]
+        public void ShouldDismissAlert()
+        {
+            var inputData = new AddAddressPageBO()
+            {
+                FirstName = "Pretty please don't edit/delete"
+            };
+            addressesPage.DeleteAddress(inputData.FirstName);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            _driver.Quit();
+        }
+    }
 			
 ```
 
